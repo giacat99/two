@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Nhân Viên</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Đăng Nhập / Đăng Ký</h1>
+        <form id="authForm">
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+            
+            <label for="password">Mật khẩu:</label>
+            <input type="password" id="password" required>
+            
+            <button type="submit">Đăng Nhập</button>
+            <button type="button" id="registerButton">Đăng Ký</button>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        // Cấu hình Firebase
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        // Khởi tạo Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.getAuth(app);
+
+        // Xử lý đăng nhập
+        document.getElementById('authForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            firebase.signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Chuyển hướng đến trang quản lý nhân viên
+                    window.location.href = 'dashboard.html';
+                })
+                .catch((error) => {
+                    document.getElementById('message').innerText = error.message;
+                });
+        });
+
+        // Xử lý đăng ký
+        document.getElementById('registerButton').addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            firebase.createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    document.getElementById('message').innerText = "Tài khoản đã được tạo thành công!";
+                })
+                .catch((error) => {
+                    document.getElementById('message').innerText = error.message;
+                });
+        });
+    </script>
+</body>
+</html>
